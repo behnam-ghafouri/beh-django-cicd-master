@@ -2,7 +2,7 @@
 
 name: CI-CD pipeline to AWS
 env:
-  EB_S3_BUCKET_NAME: "behnam-ci-cd-bucket"
+  EB_S3_BUCKET_NAME: "behnam-ci-cd-bucket2"
   EB_APPLICATION_NAME: "djangoTest"
   EB_ENVIRONMENT_NAME: "Djangotest-env"
   DEPLOY_PACKAGE_NAME: "django-app-${{ github.sha }}.zip"
