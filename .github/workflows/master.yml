@@ -2,11 +2,11 @@
 
 name: CI-CD pipeline to AWS
 env:
-  EB_S3_BUCKET_NAME: "behnam-ci-cd-bucket"
-  EB_APPLICATION_NAME: "Demo"
-  EB_ENVIRONMENT_NAME: "Demo-env"
+  EB_S3_BUCKET_NAME: "behnam-ci-cd-bucket2"
+  EB_APPLICATION_NAME: "djangoTest"
+  EB_ENVIRONMENT_NAME: "Djangotest-env"
   DEPLOY_PACKAGE_NAME: "django-app-${{ github.sha }}.zip"
-  AWS_REGION_NAME: "eu-central-1"
+  AWS_REGION_NAME: "us-east-2"
 
 on:
   push:
@@ -25,8 +25,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with: 
-          aws-access-key-id: ${{ secrets.aws_access_key_id }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION_NAME }}
       - name: Copying file to S3
         run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_S3_BUCKET_NAME }}/
@@ -39,8 +39,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with: 
-          aws-access-key-id: ${{ secrets.aws_access_key_id }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION_NAME }}
       
       - name: Create new EBL app ver
