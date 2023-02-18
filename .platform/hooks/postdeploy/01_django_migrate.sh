@@ -1,7 +1,5 @@
 #!/bin/bash
 
-pip install -r  requirements.txt
-
 source /var/app/venv/*/bin/activate && {
 # collect static
 python manage.py collectstatic --noinput;
