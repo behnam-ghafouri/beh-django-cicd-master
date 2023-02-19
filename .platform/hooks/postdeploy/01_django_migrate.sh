@@ -9,4 +9,5 @@ python manage.py showmigrations;
 python manage.py migrate users --noinput;
 # migrate the rest
 python manage.py migrate --noinput;
+
 }
