@@ -40,5 +40,5 @@ jobs:
 
       - name: Replace AWS Sample Application with Django server
         run: |
-          eb use Djangotest-env
+          eb use "Djangotest-env"
           eb deploy --staged --label "behnamLabel"
