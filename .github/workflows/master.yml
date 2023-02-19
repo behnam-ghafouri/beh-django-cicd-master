@@ -35,6 +35,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: "us-east-2"
 
+      - name: Initialize EB CLI
+        run: eb init --platform python-3.8 "djangoTest"
+
       - name: Replace AWS Sample Application with Django server
         run: |
           eb use "Djangotest-env"
