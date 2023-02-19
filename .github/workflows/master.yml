@@ -1,5 +1,4 @@
 #Location: .github/workflows/custom_config.yml
-
 name: CI-CD pipeline to AWS
 env:
   EB_S3_BUCKET_NAME: "behnam-ci-cd-bucket2"
@@ -12,45 +11,31 @@ on:
   push:
     branches:
       - master #Use your own branch here (Might be staging or testing)
+
+
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps: 
-      - name: Git clone on our repo
-        uses: actions/checkout@v2
-        
-      - name: Create zip deployment package
-        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./ -x *.git*
-        
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ env.AWS_REGION_NAME }}
-      - name: Copying file to S3
-        run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_S3_BUCKET_NAME }}/
-      - name: Print nice message on success finish
-        run: echo "CI part finished successfuly"
   deploy:
     runs-on: ubuntu-latest
-    needs: [build]
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install EB CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3-pip -y
+          pip3 install awsebcli --upgrade --user
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
-        with: 
+        with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ env.AWS_REGION_NAME }}
-      
-      - name: Create new EBL app ver
+          aws-region: "us-east-2"
+
+      - name: Replace AWS Sample Application with Django server
         run: |
-          aws elasticbeanstalk create-application-version \
-          --application-name ${{ env.EB_APPLICATION_NAME }} \
-          --source-bundle S3Bucket="${{ env.EB_S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
-          --version-label "${{ github.sha }}"
-      
-      - name: Deploy new app
-        run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT_NAME }} --version-label "${{ github.sha }}"
-      - name: Print nice message on success finish
-        run: echo "CD part finished successfuly"
+          eb use "Djangotest-env"
+          eb deploy --staged --label "behnamLabel"
